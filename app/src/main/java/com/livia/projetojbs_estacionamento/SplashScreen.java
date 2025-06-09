@@ -31,7 +31,7 @@ public class SplashScreen extends AppCompatActivity {
                 .asGif()
                 .load(R.drawable.video)
                 .into(imageView);
-        new Handler().postDelayed(this::abrirTela, 9000);
+        new Handler().postDelayed(this::abrirTela, 6500);
     }
     private void abrirTela(){
         Intent rota= new Intent (this,Cadastro.class);
