@@ -92,7 +92,7 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <Button
-        android:id="@+id/bt_enviar_cadastro"
+        android:id="@+id/bt_enviar_login"
         android:layout_width="191dp"
         android:layout_height="51dp"
         android:layout_marginTop="41dp"

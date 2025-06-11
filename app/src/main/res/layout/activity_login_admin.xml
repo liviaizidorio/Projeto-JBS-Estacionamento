@@ -5,7 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".CadastroUsuario">
+    tools:context=".CadastroAdmin">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
@@ -34,15 +34,16 @@
         android:id="@+id/textView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="64dp"
-        android:text="Cadastro"
+        android:layout_marginTop="88dp"
+        android:text="Login"
         android:textSize="34sp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/toolbar" />
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/nomeUsuario"
+        android:id="@+id/nomeAdmin"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="318dp"
         android:layout_height="70dp"
@@ -59,7 +60,7 @@
         app:layout_constraintTop_toBottomOf="@+id/textView4">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/input_nome_usuario"
+            android:id="@+id/input_nome_admin"
             android:layout_width="match_parent"
             android:layout_height="58dp"
             android:hint="Digite seu nome"
@@ -67,7 +68,7 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/emailUsuario"
+        android:id="@+id/emailAdmin"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="318dp"
         android:layout_height="70dp"
@@ -84,7 +85,7 @@
         app:layout_constraintTop_toBottomOf="@+id/textView5">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/input_email_usuario"
+            android:id="@+id/input_email_admin"
             android:layout_width="match_parent"
             android:layout_height="58dp"
             android:hint="Digite seu e-mail"
@@ -92,7 +93,7 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/telefoneUsuario"
+        android:id="@+id/senhaAdmin"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="318dp"
         android:layout_height="70dp"
@@ -104,15 +105,15 @@
         app:boxCornerRadiusTopEnd="15dp"
         app:boxCornerRadiusTopStart="15dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.622"
+        app:layout_constraintHorizontal_bias="0.488"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView6">
+        app:layout_constraintTop_toBottomOf="@+id/textView7">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/input_telefone_usuario"
+            android:id="@+id/input_telefone_senha"
             android:layout_width="match_parent"
             android:layout_height="58dp"
-            android:hint="Digite seu telefone"
+            android:hint="Digite sua senha"
             android:inputType="phone"
             android:padding="12dp" />
 
@@ -122,8 +123,8 @@
         android:id="@+id/textView4"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="52dp"
-        android:layout_marginTop="36dp"
+        android:layout_marginStart="44dp"
+        android:layout_marginTop="16dp"
         android:text="Nome"
         android:textColor="#807979"
         app:layout_constraintStart_toStartOf="parent"
@@ -133,33 +134,59 @@
         android:id="@+id/textView5"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="52dp"
+        android:layout_marginStart="44dp"
         android:layout_marginTop="8dp"
         android:text="E-mail"
         android:textColor="#807979"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/nomeUsuario" />
+        app:layout_constraintTop_toBottomOf="@+id/nomeAdmin" />
 
     <TextView
-        android:id="@+id/textView6"
+        android:id="@+id/textView7"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="52dp"
-        android:layout_marginTop="8dp"
-        android:text="Telefone"
+        android:layout_marginStart="44dp"
+        android:layout_marginTop="12dp"
+        android:text="Senha"
         android:textColor="#807979"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/emailUsuario" />
+        app:layout_constraintTop_toBottomOf="@+id/emailAdmin" />
+
+
+    <TextView
+        android:id="@+id/textView8"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="96dp"
+        android:layout_marginTop="68dp"
+        android:layout_marginEnd="2dp"
+        android:text="Não tem uma conta?"
+        app:layout_constraintEnd_toStartOf="@+id/tela_cadastro_usuario"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/senhaAdmin" />
+
+    <TextView
+        android:id="@+id/tela_cadastro_usuario"
+        android:layout_width="88dp"
+        android:layout_height="19dp"
+        android:layout_marginTop="68dp"
+        android:layout_marginEnd="96dp"
+        android:text="Cadastre-se"
+        android:textColor="#4B25DB"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/senhaAdmin" />
 
     <Button
         android:id="@+id/bt_enviar_login"
         android:layout_width="191dp"
         android:layout_height="51dp"
-        android:layout_marginTop="41dp"
-        android:text="Cadastrar"
+        android:layout_marginTop="6dp"
+        android:text="Entrar"
         app:cornerRadius="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/telefoneUsuario" />
+        app:layout_constraintTop_toBottomOf="@+id/textView8" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
