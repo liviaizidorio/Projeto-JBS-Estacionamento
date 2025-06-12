@@ -16,7 +16,8 @@
         android:theme="?attr/actionBarTheme"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:backgroundTint="#4B25DB"/>
 
     <TextView
         android:id="@+id/textView"
@@ -34,6 +35,7 @@
         android:layout_width="219dp"
         android:layout_height="67dp"
         android:layout_marginTop="68dp"
+        android:backgroundTint="#4B25DB"
         android:text="Entrar como usuário"
         app:cornerRadius="8dp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -45,6 +47,7 @@
         android:layout_width="219dp"
         android:layout_height="71dp"
         android:layout_marginTop="28dp"
+        android:backgroundTint="#4B25DB"
         android:text="Entrar como administrador"
         app:cornerRadius="8dp"
         app:layout_constraintEnd_toEndOf="parent"

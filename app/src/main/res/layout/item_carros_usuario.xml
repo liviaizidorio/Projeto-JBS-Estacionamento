@@ -70,6 +70,7 @@
             android:id="@+id/bt_registrar_saida"
             android:layout_width="109dp"
             android:layout_height="58dp"
+            android:backgroundTint="#4B25DB"
             android:text="Registrar\nsaída"
             app:cornerRadius="6dp"
             app:layout_constraintBottom_toBottomOf="parent"

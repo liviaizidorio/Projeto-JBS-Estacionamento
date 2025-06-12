@@ -101,7 +101,8 @@
             app:layout_constraintBottom_toBottomOf="@+id/materialToolbar2"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/confirmacaoSenha" />
+            app:layout_constraintTop_toBottomOf="@+id/confirmacaoSenha"
+            android:backgroundTint="#4B25DB"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
