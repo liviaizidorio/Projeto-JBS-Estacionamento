@@ -34,10 +34,11 @@
         android:id="@+id/textView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="64dp"
-        android:text="Cadastro"
+        android:layout_marginTop="80dp"
+        android:text="Login"
         android:textSize="34sp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/toolbar" />
 
@@ -91,39 +92,12 @@
             android:padding="12dp" />
     </com.google.android.material.textfield.TextInputLayout>
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/telefoneUsuario"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-        android:layout_width="318dp"
-        android:layout_height="70dp"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="24dp"
-        app:boxCornerRadiusBottomEnd="15dp"
-        app:boxCornerRadiusBottomStart="15dp"
-        app:boxCornerRadiusTopEnd="15dp"
-        app:boxCornerRadiusTopStart="15dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.622"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView6">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/input_telefone_usuario"
-            android:layout_width="match_parent"
-            android:layout_height="58dp"
-            android:hint="Digite seu telefone"
-            android:inputType="phone"
-            android:padding="12dp" />
-
-    </com.google.android.material.textfield.TextInputLayout>
-
     <TextView
         android:id="@+id/textView4"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="52dp"
-        android:layout_marginTop="36dp"
+        android:layout_marginTop="42dp"
         android:text="Nome"
         android:textColor="#807979"
         app:layout_constraintStart_toStartOf="parent"
@@ -141,25 +115,37 @@
         app:layout_constraintTop_toBottomOf="@+id/nomeUsuario" />
 
     <TextView
-        android:id="@+id/textView6"
+        android:id="@+id/textView8"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="52dp"
-        android:layout_marginTop="8dp"
-        android:text="Telefone"
-        android:textColor="#807979"
+        android:layout_marginStart="96dp"
+        android:layout_marginTop="104dp"
+        android:layout_marginEnd="2dp"
+        android:text="Não tem uma conta?"
+        app:layout_constraintEnd_toStartOf="@+id/tela_cadastro_usuario"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/emailUsuario" />
+
+    <TextView
+        android:id="@+id/tela_cadastro_usuario"
+        android:layout_width="88dp"
+        android:layout_height="19dp"
+        android:layout_marginTop="104dp"
+        android:layout_marginEnd="96dp"
+        android:text="Cadastre-se"
+        android:textColor="#4B25DB"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/emailUsuario" />
 
     <Button
         android:id="@+id/bt_enviar_login"
         android:layout_width="191dp"
         android:layout_height="51dp"
-        android:layout_marginTop="41dp"
-        android:text="Cadastrar"
+        android:layout_marginTop="6dp"
+        android:text="Entrar"
         app:cornerRadius="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/telefoneUsuario" />
-
+        app:layout_constraintTop_toBottomOf="@+id/textView8" />
 </androidx.constraintlayout.widget.ConstraintLayout>

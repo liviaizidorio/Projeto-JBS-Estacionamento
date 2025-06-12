@@ -13,17 +13,10 @@
         android:theme="@style/Theme.ProjetoJBSEstacionamento"
         tools:targetApi="31">
         <activity
-            android:name=".InputVehiclePlateExt"
-            android:exported="false"
-            android:theme="@style/Theme.ProjetoJBSEstacionamento" />
-        <activity
-            android:name=".InputVehiclePlate"
+            android:name=".LoginAdmin"
             android:exported="false" />
         <activity
-            android:name=".ConfirmExclusionCardExt"
-            android:exported="false" />
-        <activity
-            android:name=".ConfirmExclusionCard"
+            android:name=".LoginUsuario"
             android:exported="false" />
         <activity
             android:name=".ListaCarros"
