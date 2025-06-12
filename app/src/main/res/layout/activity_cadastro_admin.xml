@@ -16,7 +16,8 @@
         android:theme="?attr/actionBarTheme"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:backgroundTint="#4B25DB"/>
 
     <ImageView
         android:id="@+id/imgVoltar"
@@ -194,6 +195,7 @@
         android:layout_width="191dp"
         android:layout_height="51dp"
         android:layout_marginTop="38dp"
+        android:backgroundTint="#4B25DB"
         android:text="Cadastrar"
         app:cornerRadius="8dp"
         app:layout_constraintEnd_toEndOf="parent"
