@@ -42,7 +42,7 @@ public class LoginUsuario extends AppCompatActivity {
         ImageView imgVoltar = findViewById(R.id.imgVoltar);
 
         telaCadastroUsuario.setOnClickListener(v -> {
-            Intent rota = new Intent(this, Cadastro.class);
+            Intent rota = new Intent(this, CadastroUsuario.class);
             startActivity(rota);
         });
 
@@ -58,7 +58,7 @@ public class LoginUsuario extends AppCompatActivity {
                 }
 
                 if (verificarExistencia(inputNomeUsuario, inputEmailUsuario, argLista)) {
-                    Intent rota = new Intent(LoginUsuario.this, ListaCarros.class);
+                    Intent rota = new Intent(LoginUsuario.this, InfoVeiculos.class);
                     startActivity(rota);
                 } else {
                     Toast.makeText(LoginUsuario.this, "Nome ou e-mail incorretos.", Toast.LENGTH_SHORT).show();
