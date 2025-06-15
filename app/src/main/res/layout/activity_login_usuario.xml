@@ -132,7 +132,7 @@
         android:layout_width="88dp"
         android:layout_height="19dp"
         android:layout_marginTop="104dp"
-        android:layout_marginEnd="96dp"
+        android:layout_marginEnd="88dp"
         android:text="Cadastre-se"
         android:textColor="#4B25DB"
         android:textStyle="bold"
