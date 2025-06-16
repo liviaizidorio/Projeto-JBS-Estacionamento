@@ -41,6 +41,7 @@ public class LoginUsuario extends AppCompatActivity {
         Button btEnviarLogin = findViewById(R.id.bt_enviar_login);
         ImageView imgVoltar = findViewById(R.id.imgVoltar);
 
+
         telaCadastroUsuario.setOnClickListener(v -> {
             Intent rota = new Intent(this, CadastroUsuario.class);
             startActivity(rota);
@@ -58,8 +59,17 @@ public class LoginUsuario extends AppCompatActivity {
                 }
 
                 if (verificarExistencia(inputNomeUsuario, inputEmailUsuario, argLista)) {
-                    Intent rota = new Intent(LoginUsuario.this, InfoVeiculos.class);
-                    startActivity(rota);
+                    String nomeUsuario = inputNomeUsuario.getText().toString().trim();
+
+                    if (!nomeUsuario.isEmpty()) {
+                        Intent rota = new Intent(LoginUsuario.this, InfoVeiculos.class);
+                        rota.putExtra("NOME_USUARIO", nomeUsuario);  // <- Aqui vai o Bundle
+                        startActivity(rota);
+                        finish();
+                    } else {
+                        Toast.makeText(LoginUsuario.this, "Nome de usuário está vazio!", Toast.LENGTH_SHORT).show();
+                    }
+
                 } else {
                     Toast.makeText(LoginUsuario.this, "Nome ou e-mail incorretos.", Toast.LENGTH_SHORT).show();
                 }
