@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "349667480624",
+    "project_id": "estacionamento-jbs-bced4",
+    "storage_bucket": "estacionamento-jbs-bced4.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:349667480624:android:7e5231c94be0e2511189f5",
+        "android_client_info": {
+          "package_name": "com.livia.projetoemgrupo_estacionamento"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCjxTCaZv8b8pAo_tixxYFJVru9uoWQmGk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:349667480624:android:0c61b29a037a52f61189f5",
+        "android_client_info": {
+          "package_name": "com.livia.projetojbs_estacionamento"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCjxTCaZv8b8pAo_tixxYFJVru9uoWQmGk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
