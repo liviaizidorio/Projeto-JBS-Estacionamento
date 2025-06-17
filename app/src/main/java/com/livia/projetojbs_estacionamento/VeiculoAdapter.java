@@ -38,19 +38,20 @@ public class VeiculoAdapter extends RecyclerView.Adapter<VeiculoAdapter.VeiculoV
         Veiculo veiculo = listaVeiculos.get(position);
 
         holder.txtPlaca.setText("Placa: " + veiculo.getPlaca());
-        holder.txtEntrada.setText("Entrada: " + veiculo.getEntradaDia() + " às " + veiculo.getEntradaHora());
-        holder.txtSaida.setText("Saída: " + veiculo.getSaidaDia() + " às " + veiculo.getSaidaHora());
+        holder.txtEntrada.setText("Entrada: " + veiculo.getEntradaDia() + " \nàs " + veiculo.getEntradaHora());
 
         if (veiculo.getSaidaDia() != null && !veiculo.getSaidaDia().isEmpty()) {
-            holder.txtPermanencia.setText("Permanência: Finalizada");
+            holder.txtSaida.setText("Saída: " + veiculo.getSaidaDia() + " \nàs " + veiculo.getSaidaHora());
+            holder.txtPermanencia.setText("Status: Finalizado");
         } else {
-            holder.txtPermanencia.setText("Permanência: Em aberto");
+            holder.txtPermanencia.setText("Status: Em aberto");
+            holder.txtSaida.setText("Saída: ");
         }
 
         if (Cadastro.isAdmin){
             holder.btExcluir.setVisibility(View.VISIBLE);
         } else {
-            holder.btExcluir.setVisibility(View.GONE);
+            holder.btRegistrarSaida.setVisibility(View.VISIBLE);
         };
 
         holder.btExcluir.setOnClickListener(v -> {
@@ -96,7 +97,7 @@ public class VeiculoAdapter extends RecyclerView.Adapter<VeiculoAdapter.VeiculoV
             txtEntrada = itemView.findViewById(R.id.item_carro_entrada);
             txtSaida = itemView.findViewById(R.id.item_carro_saida);
             txtPermanencia = itemView.findViewById(R.id.item_carro_permanencia);
-            btExcluir = itemView.findViewById(R.id.bt_excluir_carro);
+            btExcluir = itemView.findViewById(R.id.bt_excluir_carro2);
             btRegistrarSaida = itemView.findViewById(R.id.bt_registrar_saida);
         }
     }

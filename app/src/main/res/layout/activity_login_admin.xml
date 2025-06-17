@@ -12,12 +12,12 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:background="?attr/colorPrimary"
+        android:backgroundTint="#4B25DB"
         android:minHeight="?attr/actionBarSize"
         android:theme="?attr/actionBarTheme"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:backgroundTint="#4B25DB"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
         android:id="@+id/imgVoltar"
@@ -30,6 +30,23 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/seta" />
+
+    <ImageView
+        android:id="@+id/toggle_password_visibility"
+        android:layout_width="43dp"
+        android:layout_height="36dp"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="408dp"
+        android:layout_marginEnd="4dp"
+        android:contentDescription="Mostrar senha"
+        android:src="@drawable/ic_eye"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toEndOf="@+id/senhaAdmin"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar"
+        app:layout_constraintVertical_bias="0.004"
+        app:tint="#020202" />
 
     <TextView
         android:id="@+id/textView2"
@@ -160,10 +177,9 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="96dp"
         android:layout_marginTop="68dp"
-        android:layout_marginEnd="2dp"
         android:text="Não tem uma conta?"
         app:layout_constraintEnd_toStartOf="@+id/tela_cadastro_usuario"
-        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/senhaAdmin" />
 
@@ -177,6 +193,8 @@
         android:textColor="#4B25DB"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/textView8"
         app:layout_constraintTop_toBottomOf="@+id/senhaAdmin" />
 
     <Button

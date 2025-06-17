@@ -7,6 +7,17 @@
     android:layout_height="match_parent"
     tools:context=".ListaCarros">
 
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvAdmin"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="1dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.444"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/placaUsuario"
+        tools:listitem="@layout/item_carros" />
+
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="0dp"
@@ -31,31 +42,29 @@
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/seta" />
 
+
     <TextView
         android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
         android:layout_marginTop="60dp"
         android:text="Olá, "
         android:textSize="30sp"
         android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.09"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/toolbar" />
-
 
     <TextView
         android:id="@+id/textView90"
         android:layout_width="98dp"
         android:layout_height="40dp"
-        android:layout_marginStart="56dp"
         android:layout_marginTop="60dp"
         android:text="Nome"
         android:textColor="#4D5EDB"
         android:textSize="30dp"
         android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="@+id/textView"
+        app:layout_constraintStart_toEndOf="@+id/textView"
         app:layout_constraintTop_toBottomOf="@+id/toolbar" />
 
     <TextView
@@ -104,36 +113,15 @@
         app:layout_constraintTop_toBottomOf="@+id/textView2"
         app:srcCompat="@drawable/busca" />
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/constraintLayout"
-        android:layout_width="410dp"
-        android:layout_height="360dp"
-        android:layout_marginTop="12dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/placaUsuario">
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rvAdmin"
-            android:layout_width="408dp"
-            android:layout_height="358dp"
-            android:layout_marginStart="1dp"
-            android:layout_marginTop="1dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:listitem="@layout/item_carros_admin" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
     <ImageView
         android:id="@+id/img_apagar_regristros"
         android:layout_width="64dp"
         android:layout_height="61dp"
-        android:layout_marginTop="4dp"
-        android:layout_marginEnd="16dp"
+        android:layout_marginTop="572dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/constraintLayout"
+        app:layout_constraintHorizontal_bias="0.955"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/placaUsuario"
         app:srcCompat="@drawable/lixeiro_registro" />
 
     <TextView
@@ -142,6 +130,7 @@
         android:layout_height="36dp"
         android:layout_marginEnd="16dp"
 
+        android:layout_marginBottom="28dp"
         android:gravity="center"
         android:text="Limpar\nRegistros"
         app:layout_constraintBottom_toBottomOf="parent"

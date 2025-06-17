@@ -7,6 +7,8 @@ public class Veiculo {
     String saidaDia;
     String saidaHora;
 
+    String horaFormatada;
+
     public String getPlaca() {
         return placa;
     }
@@ -47,6 +49,14 @@ public class Veiculo {
         this.saidaHora = saidaHora;
     }
 
+    public String getHoraFormatada() {
+        return horaFormatada;
+    }
+
+    public void setHoraFormatada(String horaFormatada){
+        this.horaFormatada = horaFormatada;
+    }
+
     public Veiculo(String placa, String entradaDia, String entradaHora, String saidaDia, String saidaHora) {
         this.placa = placa;
         this.entradaDia = entradaDia;
@@ -54,6 +64,7 @@ public class Veiculo {
         this.saidaDia = saidaDia;
         this.saidaHora = saidaHora;
     }
+
     public Veiculo() {
     }
 }

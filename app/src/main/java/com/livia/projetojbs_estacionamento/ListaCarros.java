@@ -1,5 +1,6 @@
 package com.livia.projetojbs_estacionamento;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
@@ -86,7 +87,15 @@ public class ListaCarros extends AppCompatActivity {
             carregarTodosOsVeiculos();
         });
         imageBuscar.setOnClickListener(v -> buscarVeiculoPorPlaca());
+
+        ImageView imgVoltar = findViewById(R.id.imgVoltar);
+        imgVoltar.setOnClickListener(v -> {
+            Intent rota = new Intent(this, Cadastro.class);
+            startActivity(rota);
+        });
+
     }
+
     private void mostrarPopupLimparRegistros() {
 
     }

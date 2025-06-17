@@ -28,14 +28,14 @@ public class Cadastro extends AppCompatActivity {
         Button bt_add_veiculo = findViewById(R.id.bt_add_veiculo);
 
         bt_entrar_usuario.setOnClickListener(v -> {
+            isAdmin = false;
             Intent rota = new Intent(this, LoginUsuario.class);
             startActivity(rota);
         });
         bt_add_veiculo.setOnClickListener(v -> {
+            isAdmin = true;
             Intent rota = new Intent(this, LoginAdmin.class);
             startActivity(rota);
         });
-        isAdmin = true;
-
     }
 }

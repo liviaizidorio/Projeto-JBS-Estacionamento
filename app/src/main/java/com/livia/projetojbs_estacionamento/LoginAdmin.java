@@ -2,6 +2,8 @@ package com.livia.projetojbs_estacionamento;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.method.HideReturnsTransformationMethod;
+import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
@@ -26,6 +28,8 @@ import java.util.Map;
 
 public class LoginAdmin extends AppCompatActivity {
 
+    private boolean isPasswordVisible = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,6 +47,7 @@ public class LoginAdmin extends AppCompatActivity {
         TextView telaCadastroAdmin = findViewById(R.id.tela_cadastro_usuario);
         Button btEnviarLogin = findViewById(R.id.bt_enviar_login);
         ImageView imgVoltar = findViewById(R.id.imgVoltar);
+        ImageView togglePasswordVisibility = findViewById(R.id.toggle_password_visibility);
 
         telaCadastroAdmin.setOnClickListener(v -> {
             Intent rota = new Intent(this, CadastroAdmin.class);
@@ -66,7 +71,7 @@ public class LoginAdmin extends AppCompatActivity {
 
         // Login ao clicar no botão
         btEnviarLogin.setOnClickListener(v -> {
-            db.collection("admin").get().addOnSuccessListener(value -> {  // <<< ALTERADO: buscando da collection "admin"
+            db.collection("admin").get().addOnSuccessListener(value -> {
                 List<Admin> argLista = new ArrayList<>();
                 for (DocumentSnapshot doc : value.getDocuments()) {
                     Admin objAdmin = doc.toObject(Admin.class);
@@ -77,7 +82,7 @@ public class LoginAdmin extends AppCompatActivity {
 
                     if (!nomeUsuario.isEmpty()) {
                         Intent rota = new Intent(LoginAdmin.this, ListaCarros.class);
-                        rota.putExtra("NOME_USUARIO", nomeUsuario);  // <-- Bundle aqui dentro!
+                        rota.putExtra("NOME_USUARIO", nomeUsuario);
                         startActivity(rota);
                         finish();
                     } else {
@@ -96,6 +101,18 @@ public class LoginAdmin extends AppCompatActivity {
         imgVoltar.setOnClickListener(v -> {
             Intent rota = new Intent(LoginAdmin.this, Cadastro.class);
             startActivity(rota);
+        });
+
+        togglePasswordVisibility.setOnClickListener(v -> {
+            if (isPasswordVisible) {
+                inputSenhaAdmin.setTransformationMethod(PasswordTransformationMethod.getInstance());
+                togglePasswordVisibility.setImageResource(R.drawable.ic_eye);
+            } else {
+                inputSenhaAdmin.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
+                togglePasswordVisibility.setImageResource(R.drawable.ic_eye_off);
+            }
+            isPasswordVisible = !isPasswordVisible;
+            inputSenhaAdmin.setSelection(inputSenhaAdmin.getText().length());
         });
     }
 

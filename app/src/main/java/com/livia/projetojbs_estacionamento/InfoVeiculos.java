@@ -62,15 +62,14 @@ public class InfoVeiculos extends AppCompatActivity {
         ImageView btnBuscar = (ImageView) findViewById(R.id.imageView4);
         EditText editTextBusca = binding.inputNomeUsuario;
         TextView txtLimparBusca = binding.textX;
-        TextView nomeusuario = binding.textView12;
-        //Button bt_registrar_saida = binding.btRegistrarSaida;
+        TextView txtNome = findViewById(R.id.textView90);
         Bundle extras = getIntent().getExtras();
 
         if (extras != null) {
             String recebidoNomeUsuario = extras.getString("NOME_USUARIO");
 
             if (recebidoNomeUsuario != null && !recebidoNomeUsuario.isEmpty()) {
-                binding.textView12.setText(recebidoNomeUsuario);
+                txtNome.setText(recebidoNomeUsuario);
             } else {
                 Toast.makeText(this, "Nome de usuário veio vazio no Bundle", Toast.LENGTH_SHORT).show();
             }
@@ -90,6 +89,12 @@ public class InfoVeiculos extends AppCompatActivity {
         txtLimparBusca.setOnClickListener(v -> {
             editTextBusca.setText("");
             listar(listaVeiculo, veiculoAdapter, this);
+        });
+
+        ImageView imgVoltar = findViewById(R.id.imgVoltar);
+        imgVoltar.setOnClickListener(v -> {
+            Intent rota = new Intent(this, Cadastro.class);
+            startActivity(rota);
         });
 
         Button btnAddVeiculo = findViewById(R.id.add_veiculo);

@@ -1,9 +1,11 @@
 package com.livia.projetojbs_estacionamento;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -22,6 +24,7 @@ import com.livia.projetojbs_estacionamento.databinding.ActivityCadastroPlacaBind
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -57,7 +60,8 @@ public class CadastroPlaca extends AppCompatActivity {
 
         LocalDate dataAtual = LocalDate.now();
         LocalTime horaAtual = LocalTime.now();
-//        Veiculo veiculo = new Veiculo(placa, String.valueOf(dataAtual), String.valueOf(horaAtual), null, null);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+        String horaFormatada = horaAtual.format(formatter);
 
 
         int result = verificarExistencia(placa);
@@ -66,7 +70,7 @@ public class CadastroPlaca extends AppCompatActivity {
                 String placaDigitada = editTextPlaca.getText().toString().trim();
                 if (!placaDigitada.isEmpty()) {
 
-                    Veiculo veiculo = new Veiculo(placaDigitada, String.valueOf(dataAtual), String.valueOf(horaAtual), null, null);
+                    Veiculo veiculo = new Veiculo(placaDigitada, dataAtual.toString(), horaFormatada, null, null);
                     salvar(veiculo, this);
                 } else {
                     Toast.makeText(this, "Digite algo para prosseguir", Toast.LENGTH_SHORT).show();
@@ -77,6 +81,13 @@ public class CadastroPlaca extends AppCompatActivity {
         else {
             Toast.makeText(this, "Veículo já existe!", Toast.LENGTH_SHORT).show();
         }
+
+        ImageView imgVoltar = findViewById(R.id.imgVoltar);
+        imgVoltar.setOnClickListener(v -> {
+            Intent rota = new Intent(this, InfoVeiculos.class);
+            startActivity(rota);
+        });
+
     }
 
     public void salvar(Veiculo veiculo, Context c) {
