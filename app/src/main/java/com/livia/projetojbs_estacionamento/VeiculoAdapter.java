@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -28,7 +29,7 @@ public class VeiculoAdapter extends RecyclerView.Adapter<VeiculoAdapter.VeiculoV
     @NonNull
     @Override
     public VeiculoViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View itemView = LayoutInflater.from(context).inflate(R.layout.item_carros_admin, parent, false);
+        View itemView = LayoutInflater.from(context).inflate(R.layout.item_carros, parent, false);
         return new VeiculoViewHolder(itemView);
     }
 
@@ -45,6 +46,12 @@ public class VeiculoAdapter extends RecyclerView.Adapter<VeiculoAdapter.VeiculoV
         } else {
             holder.txtPermanencia.setText("Permanência: Em aberto");
         }
+
+        if (Cadastro.isAdmin){
+            holder.btExcluir.setVisibility(View.VISIBLE);
+        } else {
+            holder.btExcluir.setVisibility(View.GONE);
+        };
 
         holder.btExcluir.setOnClickListener(v -> {
             String placa = veiculo.getPlaca();
@@ -69,6 +76,7 @@ public class VeiculoAdapter extends RecyclerView.Adapter<VeiculoAdapter.VeiculoV
                     })
                     .addOnFailureListener(e -> Toast.makeText(context, "Falha ao acessar o Firestore", Toast.LENGTH_SHORT).show());
         });
+
     }
 
     @Override
@@ -80,6 +88,8 @@ public class VeiculoAdapter extends RecyclerView.Adapter<VeiculoAdapter.VeiculoV
         TextView txtPlaca, txtEntrada, txtSaida, txtPermanencia;
         ImageButton btExcluir;
 
+        Button btRegistrarSaida;
+
         public VeiculoViewHolder(@NonNull View itemView) {
             super(itemView);
             txtPlaca = itemView.findViewById(R.id.item_carro_placa);
@@ -87,6 +97,7 @@ public class VeiculoAdapter extends RecyclerView.Adapter<VeiculoAdapter.VeiculoV
             txtSaida = itemView.findViewById(R.id.item_carro_saida);
             txtPermanencia = itemView.findViewById(R.id.item_carro_permanencia);
             btExcluir = itemView.findViewById(R.id.bt_excluir_carro);
+            btRegistrarSaida = itemView.findViewById(R.id.bt_registrar_saida);
         }
     }
 }

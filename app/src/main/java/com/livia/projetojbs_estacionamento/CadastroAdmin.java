@@ -2,6 +2,8 @@ package com.livia.projetojbs_estacionamento;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.method.HideReturnsTransformationMethod;
+import android.text.method.PasswordTransformationMethod;
 import android.widget.EditText;
 
 import androidx.activity.EdgeToEdge;
@@ -23,6 +25,8 @@ import java.util.List;
 
 public class CadastroAdmin extends AppCompatActivity {
 
+    private boolean isPasswordVisible = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,10 +44,24 @@ public class CadastroAdmin extends AppCompatActivity {
         EditText inputSenhaAdmin = findViewById(R.id.input_telefone_senha);
         Button btEnviarCadastro = findViewById(R.id.bt_enviar_login);
         ImageView imgVoltar = findViewById(R.id.imgVoltar);
+        ImageView togglePasswordVisibility = findViewById(R.id.toggle_password_visibility);
+
 
         imgVoltar.setOnClickListener(v -> {
             Intent rota = new Intent(this, LoginAdmin.class);
             startActivity(rota);
+        });
+
+        togglePasswordVisibility.setOnClickListener(v -> {
+            if (isPasswordVisible) {
+                inputSenhaAdmin.setTransformationMethod(PasswordTransformationMethod.getInstance());
+                togglePasswordVisibility.setImageResource(R.drawable.ic_eye);
+            } else {
+                inputSenhaAdmin.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
+                togglePasswordVisibility.setImageResource(R.drawable.ic_eye_off);
+            }
+            isPasswordVisible = !isPasswordVisible;
+            inputSenhaAdmin.setSelection(inputSenhaAdmin.getText().length());
         });
 
         FirebaseApp.initializeApp(this);

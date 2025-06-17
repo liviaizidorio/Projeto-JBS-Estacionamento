@@ -12,6 +12,8 @@ import androidx.core.view.WindowInsetsCompat;
 
 public class Cadastro extends AppCompatActivity {
 
+    public static boolean isAdmin;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,5 +35,7 @@ public class Cadastro extends AppCompatActivity {
             Intent rota = new Intent(this, LoginAdmin.class);
             startActivity(rota);
         });
+        isAdmin = true;
+
     }
 }

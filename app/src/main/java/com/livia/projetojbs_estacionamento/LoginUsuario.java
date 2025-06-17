@@ -63,7 +63,7 @@ public class LoginUsuario extends AppCompatActivity {
 
                     if (!nomeUsuario.isEmpty()) {
                         Intent rota = new Intent(LoginUsuario.this, InfoVeiculos.class);
-                        rota.putExtra("NOME_USUARIO", nomeUsuario);  // <- Aqui vai o Bundle
+                        rota.putExtra("NOME_USUARIO", nomeUsuario);
                         startActivity(rota);
                         finish();
                     } else {
