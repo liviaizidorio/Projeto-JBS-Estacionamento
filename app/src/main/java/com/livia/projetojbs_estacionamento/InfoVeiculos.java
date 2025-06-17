@@ -63,6 +63,7 @@ public class InfoVeiculos extends AppCompatActivity {
         EditText editTextBusca = binding.inputNomeUsuario;
         TextView txtLimparBusca = binding.textX;
         TextView nomeusuario = binding.textView12;
+        //Button bt_registrar_saida = binding.btRegistrarSaida;
         Bundle extras = getIntent().getExtras();
 
         if (extras != null) {
@@ -76,8 +77,6 @@ public class InfoVeiculos extends AppCompatActivity {
         } else {
             Toast.makeText(this, "Bundle está nulo!", Toast.LENGTH_SHORT).show();
         }
-
-
 
         btnBuscar.setOnClickListener(v -> {
             String termo = editTextBusca.getText().toString().trim();
@@ -156,6 +155,4 @@ public class InfoVeiculos extends AppCompatActivity {
             }
         });
     }
-
-
 }
