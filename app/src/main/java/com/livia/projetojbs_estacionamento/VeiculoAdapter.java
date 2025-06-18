@@ -108,7 +108,6 @@ public class VeiculoAdapter extends RecyclerView.Adapter<VeiculoAdapter.VeiculoV
         }
 
 
-        //holder.txtPlaca.setText("Placa: " + veiculo.getPlaca());
         holder.txtEntrada.setText("Entrada: " + dataFormatada + " | " + veiculo.getEntradaHora()); // -> Dia/Mes | Hora:minuto
 
         if (veiculo.getSaidaDia() != null && !veiculo.getSaidaDia().isEmpty()) {
