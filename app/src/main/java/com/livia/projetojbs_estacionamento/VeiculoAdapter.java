@@ -1,6 +1,12 @@
 package com.livia.projetojbs_estacionamento;
 
+import android.app.Dialog;
 import android.content.Context;
+import android.graphics.Color;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.style.BackgroundColorSpan;
+import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,8 +18,14 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.Calendar;
 import java.util.List;
 
 public class VeiculoAdapter extends RecyclerView.Adapter<VeiculoAdapter.VeiculoViewHolder> {
@@ -24,6 +36,12 @@ public class VeiculoAdapter extends RecyclerView.Adapter<VeiculoAdapter.VeiculoV
     public VeiculoAdapter(List<Veiculo> listaVeiculos, Context context) {
         this.listaVeiculos = listaVeiculos;
         this.context = context;
+    }
+
+    private String highlightText = "";
+
+    public void setHighlightText(String text) {
+        this.highlightText = text.toUpperCase();
     }
 
     @NonNull
@@ -37,11 +55,64 @@ public class VeiculoAdapter extends RecyclerView.Adapter<VeiculoAdapter.VeiculoV
     public void onBindViewHolder(@NonNull VeiculoViewHolder holder, int position) {
         Veiculo veiculo = listaVeiculos.get(position);
 
-        holder.txtPlaca.setText("Placa: " + veiculo.getPlaca());
-        holder.txtEntrada.setText("Entrada: " + veiculo.getEntradaDia() + " \nàs " + veiculo.getEntradaHora());
-  
+        String dataFormatada = "";
+        if (veiculo.getEntradaDia() != null && !veiculo.getEntradaDia().isEmpty()) {
+            try {
+                DateTimeFormatter entradaFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+                DateTimeFormatter saidaFormatter = DateTimeFormatter.ofPattern("dd/MM");
+
+                LocalDate data = LocalDate.parse(veiculo.getEntradaDia(), entradaFormatter);
+                dataFormatada = data.format(saidaFormatter);
+            } catch (Exception e) {
+                dataFormatada = veiculo.getEntradaDia();
+            }
+        }
+
+        String dataSaidaFormatada = "";
         if (veiculo.getSaidaDia() != null && !veiculo.getSaidaDia().isEmpty()) {
-            holder.txtSaida.setText("Saída: " + veiculo.getSaidaDia() + " \nàs " + veiculo.getSaidaHora());
+            try {
+                DateTimeFormatter entradaFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+                DateTimeFormatter saidaFormatter = DateTimeFormatter.ofPattern("dd/MM");
+
+                LocalDate dataSaida = LocalDate.parse(veiculo.getSaidaDia(), entradaFormatter);
+                dataSaidaFormatada = dataSaida.format(saidaFormatter);
+            } catch (Exception e) {
+                dataSaidaFormatada = veiculo.getSaidaDia();
+            }
+        }
+
+        String placaPosicao = veiculo.getPlaca();
+        if (!highlightText.isEmpty()) {
+            SpannableString spannable = new SpannableString("Placa: " + placaPosicao);
+            int index = placaPosicao.toUpperCase().indexOf(highlightText);
+            if (index >= 0) {
+                int backgroundColor = Color.parseColor("#ADD8E6");
+                int textColor = Color.parseColor("#00008B");
+
+                spannable.setSpan(
+                        new BackgroundColorSpan(backgroundColor),
+                        7 + index,
+                        7 + index + highlightText.length(),
+                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                );
+                spannable.setSpan(
+                        new ForegroundColorSpan(textColor),
+                        7 + index,
+                        7 + index + highlightText.length(),
+                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                );
+            }
+            holder.txtPlaca.setText(spannable);
+        } else {
+            holder.txtPlaca.setText("Placa: " + placaPosicao);
+        }
+
+
+        //holder.txtPlaca.setText("Placa: " + veiculo.getPlaca());
+        holder.txtEntrada.setText("Entrada: " + dataFormatada + " | " + veiculo.getEntradaHora()); // -> Dia/Mes | Hora:minuto
+
+        if (veiculo.getSaidaDia() != null && !veiculo.getSaidaDia().isEmpty()) {
+            holder.txtSaida.setText("Saída: " + dataSaidaFormatada + " | " + veiculo.getSaidaHora()); // -> Dia/Mes | Hora:minuto
             holder.txtPermanencia.setText("Status: Finalizado");
         } else {
             holder.txtPermanencia.setText("Status: Em aberto");
@@ -78,11 +149,68 @@ public class VeiculoAdapter extends RecyclerView.Adapter<VeiculoAdapter.VeiculoV
                     .addOnFailureListener(e -> Toast.makeText(context, "Falha ao acessar o Firestore", Toast.LENGTH_SHORT).show());
         });
 
+        holder.btRegistrarSaida.setOnClickListener(v -> {
+            showDialogRegistrarSaida(veiculo.getPlaca());
+        });
+
     }
 
     @Override
     public int getItemCount() {
         return listaVeiculos.size();
+    }
+
+    private void showDialogRegistrarSaida(String placa) {
+        Dialog dialog = new Dialog(context);
+        dialog.setContentView(R.layout.registrar_saida);
+        dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+
+        TextInputEditText inputPlaca = dialog.findViewById(R.id.inputPlaca);
+        inputPlaca.setText(placa);
+
+        dialog.findViewById(R.id.fecharCard).setOnClickListener(v -> dialog.dismiss());
+
+        dialog.findViewById(R.id.botaoRegistrar).setOnClickListener(v1 -> {
+            String placaDigitada = inputPlaca.getText().toString().trim();
+
+            if (placaDigitada.isEmpty()) {
+                Toast.makeText(context, "Digite a placa", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            FirebaseFirestore.getInstance()
+                    .collection("veiculo")
+                    .whereEqualTo("placa", placaDigitada)
+                    .get()
+                    .addOnSuccessListener(queryDocumentSnapshots -> {
+                        if (!queryDocumentSnapshots.isEmpty()) {
+                            DocumentReference docRef = queryDocumentSnapshots.getDocuments().get(0).getReference();
+
+                            Calendar calendar = Calendar.getInstance();
+                            SimpleDateFormat sdfData = new SimpleDateFormat("yyyy-MM-dd");
+                            SimpleDateFormat sdfHora = new SimpleDateFormat("HH:mm");
+
+                            String dataAtual = sdfData.format(calendar.getTime());
+                            String horaAtual = sdfHora.format(calendar.getTime());
+
+                            docRef.update("saidaDia", dataAtual, "saidaHora", horaAtual)
+                                    .addOnSuccessListener(aVoid -> {
+                                        Toast.makeText(context, "Saída registrada", Toast.LENGTH_SHORT).show();
+                                        dialog.dismiss();
+                                    })
+                                    .addOnFailureListener(e -> {
+                                        Toast.makeText(context, "Erro ao registrar saída", Toast.LENGTH_SHORT).show();
+                                    });
+                        } else {
+                            Toast.makeText(context, "Placa não encontrada", Toast.LENGTH_SHORT).show();
+                        }
+                    })
+                    .addOnFailureListener(e -> {
+                        Toast.makeText(context, "Erro ao acessar Firestore", Toast.LENGTH_SHORT).show();
+                    });
+        });
+
+        dialog.show();
     }
 
     public static class VeiculoViewHolder extends RecyclerView.ViewHolder {

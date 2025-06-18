@@ -117,9 +117,9 @@
         android:id="@+id/img_apagar_regristros"
         android:layout_width="64dp"
         android:layout_height="61dp"
-        android:layout_marginTop="372dp"
+        android:layout_marginTop="396dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.947"
+        app:layout_constraintHorizontal_bias="0.953"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/placaUsuario"
         app:srcCompat="@drawable/lixeiro_registro" />
@@ -128,7 +128,7 @@
         android:id="@+id/textView3"
         android:layout_width="64dp"
         android:layout_height="36dp"
-        android:layout_marginEnd="20dp"
+        android:layout_marginEnd="16dp"
 
         android:layout_marginBottom="28dp"
         android:gravity="center"
@@ -136,7 +136,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/img_apagar_regristros"
-        app:layout_constraintVertical_bias="0.08" />
+        app:layout_constraintVertical_bias="0.0" />
 
     <TextView
         android:id="@+id/textView9"

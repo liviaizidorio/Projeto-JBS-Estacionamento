@@ -3,9 +3,9 @@ package com.livia.projetojbs_estacionamento;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.LayoutInflater;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -13,12 +13,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -35,39 +31,26 @@ import java.util.List;
 
 public class InfoVeiculos extends AppCompatActivity {
     private ActivityInfoVeiculosBinding binding;
-
     private FirebaseFirestore db;
-
     private List<Veiculo> listaVeiculo = new ArrayList<>();
+    private VeiculoAdapter veiculoAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
-
         binding = ActivityInfoVeiculosBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        //Configurar o layout do recycleView
+        db = FirebaseFirestore.getInstance();
         binding.rvUsuario.setLayoutManager(new LinearLayoutManager(this));
-
-
-        //Configurar o adapter
-        VeiculoAdapter veiculoAdapter = new VeiculoAdapter(listaVeiculo, this);
+        veiculoAdapter = new VeiculoAdapter(listaVeiculo, this);
         binding.rvUsuario.setAdapter(veiculoAdapter);
 
-
-        //Usando o Database
-        listar(listaVeiculo, veiculoAdapter, this);
-        ImageView btnBuscar = (ImageView) findViewById(R.id.imageView4);
-        EditText editTextBusca = binding.inputNomeUsuario;
-        TextView txtLimparBusca = binding.textX;
+        // Nome do usuário vindo da tela anterior
         TextView txtNome = findViewById(R.id.textView90);
         Bundle extras = getIntent().getExtras();
-
         if (extras != null) {
             String recebidoNomeUsuario = extras.getString("NOME_USUARIO");
-
             if (recebidoNomeUsuario != null && !recebidoNomeUsuario.isEmpty()) {
                 txtNome.setText(recebidoNomeUsuario);
             } else {
@@ -77,37 +60,71 @@ public class InfoVeiculos extends AppCompatActivity {
             Toast.makeText(this, "Bundle está nulo!", Toast.LENGTH_SHORT).show();
         }
 
+        // Carregar todos os veículos ao abrir a tela
+        listar();
+
+        ImageView btnBuscar = findViewById(R.id.imageView4);
+        EditText editTextBusca = binding.inputNomeUsuario;
+        TextView txtLimparBusca = binding.textX;
+
+        editTextBusca.addTextChangedListener(new SimpleTextWatcher() {
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                String termo = s.toString().trim();
+                veiculoAdapter.setHighlightText(termo);
+                veiculoAdapter.notifyDataSetChanged();
+            }
+        });
+
         btnBuscar.setOnClickListener(v -> {
             String termo = editTextBusca.getText().toString().trim();
             if (!termo.isEmpty()) {
-                buscar(termo, veiculoAdapter, this);
-            } else {
-                Toast.makeText(this, "Digite algo para buscar", Toast.LENGTH_SHORT).show();
+                buscar(termo);
+                veiculoAdapter.setHighlightText("");
             }
         });
 
         txtLimparBusca.setOnClickListener(v -> {
             editTextBusca.setText("");
-            listar(listaVeiculo, veiculoAdapter, this);
+            listar();
         });
 
+        // Busca em tempo real enquanto digita
+        binding.inputNomeUsuario.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                buscarPorTrecho(s.toString().trim());
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {}
+        });
+
+        // Limpar busca
+        binding.textX.setOnClickListener(v -> {
+            binding.inputNomeUsuario.setText("");
+            listar();
+        });
+
+        // Voltar
         ImageView imgVoltar = findViewById(R.id.imgVoltar);
         imgVoltar.setOnClickListener(v -> {
             Intent rota = new Intent(this, Cadastro.class);
             startActivity(rota);
         });
 
+        // Ir para cadastrar novo veículo
         Button btnAddVeiculo = findViewById(R.id.add_veiculo);
-        btnAddVeiculo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(InfoVeiculos.this, CadastroPlaca.class);
-                startActivity(intent);
-            }});
+        btnAddVeiculo.setOnClickListener(v -> {
+            Intent intent = new Intent(InfoVeiculos.this, CadastroPlaca.class);
+            startActivity(intent);
+        });
     }
-    public void buscar(String termo, VeiculoAdapter adapter, Context c) {
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        // Recuperar os dados em TEMPO REAL
+
+    public void buscar(String termo) {
         db.collection("veiculo")
                 .whereEqualTo("placa", termo)
                 .get()
@@ -119,45 +136,64 @@ public class InfoVeiculos extends AppCompatActivity {
                             listaVeiculo.add(veiculo);
                         }
                         if (listaVeiculo.isEmpty()) {
-                            Toast.makeText(this, "Nenhum veículo encontrado com essa placa", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(this, "Nenhum veículo encontrado", Toast.LENGTH_SHORT).show();
                         }
-                        adapter.notifyDataSetChanged();
-                    } else {
-                        Toast.makeText(this, "Erro ao buscar veículos", Toast.LENGTH_SHORT).show();
+                        veiculoAdapter.notifyDataSetChanged();
                     }
                 });
-
-        db.collection("veiculo").addSnapshotListener(new EventListener<QuerySnapshot>() {
-            @Override
-            public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
-                if (error != null) {
-                    Toast.makeText(c, " Você está Off-line neste momento..!!", Toast.LENGTH_SHORT).show();
-                    System.out.println("Deu ruim " + error.getMessage());
-                    return;
-                }
-            }
-        });
     }
 
-    public void listar(List<Veiculo> argLista, VeiculoAdapter adapter, Context c) {
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        // Recuperar os dados em TEMPO REAL
+    private void buscarPorTrecho(String termo) {
+        if (termo.isEmpty()) {
+            listar();
+            return;
+        }
+
+        String fimTermo = termo + "\uf8ff";  // Para buscar prefixo no Firestore
+
+        db.collection("veiculo")
+                .whereGreaterThanOrEqualTo("placa", termo)
+                .whereLessThanOrEqualTo("placa", fimTermo)
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    listaVeiculo.clear();
+                    for (DocumentSnapshot doc : queryDocumentSnapshots) {
+                        Veiculo veiculo = doc.toObject(Veiculo.class);
+                        listaVeiculo.add(veiculo);
+                    }
+                    veiculoAdapter.notifyDataSetChanged();
+                })
+                .addOnFailureListener(e -> Toast.makeText(this, "Erro na busca", Toast.LENGTH_SHORT).show());
+    }
+
+    private void listar() {
         db.collection("veiculo").addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
                 if (error != null) {
-                    Toast.makeText(c, "Você está Off-line neste momento..!!", Toast.LENGTH_SHORT).show();
-                    System.out.println("Offline... " + error.getMessage());
+                    Toast.makeText(InfoVeiculos.this, "Você está off-line!", Toast.LENGTH_SHORT).show();
+                    System.out.println("Erro Firestore: " + error.getMessage());
                     return;
                 }
 
-                argLista.clear();
+                listaVeiculo.clear();
                 for (DocumentSnapshot doc : value.getDocuments()) {
-                    Veiculo objveiculo = doc.toObject(Veiculo.class);
-                    argLista.add(objveiculo);
-                    adapter.notifyDataSetChanged();
+                    Veiculo veiculo = doc.toObject(Veiculo.class);
+                    listaVeiculo.add(veiculo);
                 }
+                veiculoAdapter.notifyDataSetChanged();
             }
         });
     }
+}
+
+
+
+// ---- Classe SimpleTextWatcher ----
+abstract class SimpleTextWatcher implements android.text.TextWatcher {
+    @Override
+    public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+    @Override
+    public void afterTextChanged(android.text.Editable s) {}
 }

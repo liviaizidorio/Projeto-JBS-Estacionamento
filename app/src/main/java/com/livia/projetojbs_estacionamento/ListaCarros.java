@@ -3,6 +3,8 @@ package com.livia.projetojbs_estacionamento;
 import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -22,8 +24,6 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.livia.projetojbs_estacionamento.databinding.ActivityListaCarrosBinding;
-
-import org.checkerframework.checker.units.qual.A;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -48,29 +48,25 @@ public class ListaCarros extends AppCompatActivity {
 
         binding = ActivityListaCarrosBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
         editTextPlaca = findViewById(R.id.input_nome_usuario);
         imageBuscar = findViewById(R.id.imageView4);
         recyclerView = findViewById(R.id.rvAdmin);
         txtLimparBusca = findViewById(R.id.textView9);
+        imgApagarRegistros = findViewById(R.id.img_apagar_regristros);
 
         listaVeiculos = new ArrayList<>();
         adapter = new VeiculoAdapter(listaVeiculos, this);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
 
-        imgApagarRegistros = findViewById(R.id.img_apagar_regristros);
+        db = FirebaseFirestore.getInstance();
 
-        imgApagarRegistros.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mostrarPopupLimparRegistros();
-            }
-        });
+        imgApagarRegistros.setOnClickListener(v -> mostrarPopupLimparRegistros());
+
         Bundle extras = getIntent().getExtras();
-
         if (extras != null) {
             String recebidoNomeUsuario = extras.getString("NOME_USUARIO");
-
             if (recebidoNomeUsuario != null && !recebidoNomeUsuario.isEmpty()) {
                 binding.textView90.setText(recebidoNomeUsuario);
             } else {
@@ -79,22 +75,27 @@ public class ListaCarros extends AppCompatActivity {
         } else {
             Toast.makeText(this, "Bundle está nulo!", Toast.LENGTH_SHORT).show();
         }
-        db = FirebaseFirestore.getInstance();
+
         carregarTodosOsVeiculos();
-        imageBuscar.setOnClickListener(v -> {
-            String termo = editTextPlaca.getText().toString().trim();
-            if (!termo.isEmpty()) {
-                buscarVeiculoPorPlaca();
-            } else {
-                Toast.makeText(this, "Digite algo para buscar", Toast.LENGTH_SHORT).show();
+
+        // Buscar ao digitar
+        editTextPlaca.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                buscarVeiculosPorTrechoPlaca(s.toString().trim());
             }
+
+            @Override
+            public void afterTextChanged(Editable s) {}
         });
 
         txtLimparBusca.setOnClickListener(v -> {
             editTextPlaca.setText("");
             carregarTodosOsVeiculos();
         });
-        imageBuscar.setOnClickListener(v -> buscarVeiculoPorPlaca());
 
         ImageView imgVoltar = findViewById(R.id.imgVoltar);
         imgVoltar.setOnClickListener(v -> {
@@ -102,60 +103,92 @@ public class ListaCarros extends AppCompatActivity {
             startActivity(rota);
         });
 
-    }
 
-    private void mostrarPopupLimparRegistros() {
-        Dialog dialog = new Dialog(this);
-        dialog.setContentView(R.layout.confirmar_exclusao);
-        dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
 
-        TextInputEditText inputSenhaAdmin = dialog.findViewById(R.id.inputPlaca);
 
-        dialog.findViewById(R.id.fecharCard).setOnClickListener(v -> {
-            dialog.dismiss();
+        ImageView btnBuscar = findViewById(R.id.imageView4);
+        EditText editTextBusca = binding.inputNomeUsuario;
+        TextView txtLimparBusca = binding.textView9;
+
+        editTextBusca.addTextChangedListener(new SimpleTextWatcher() {
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                String termo = s.toString().trim();
+                adapter.setHighlightText(termo);
+                adapter.notifyDataSetChanged();
+            }
         });
 
-        dialog.findViewById(R.id.botaoRegistrar).setOnClickListener(v1 -> {
-            db.collection("admin")
-                    .whereEqualTo("senha", inputSenhaAdmin.getText().toString().trim())
-                    .get()
-                    .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                        @Override
-                        public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                            db.collection("veiculo")
-                                    .get()
-                                    .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                                        @Override
-                                        public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                                            for (DocumentSnapshot doc : queryDocumentSnapshots){
-                                                Veiculo veiculo = doc.toObject(Veiculo.class);
-
-                                                LocalDateTime atual = LocalDateTime.now().minusMonths(1);
-                                                LocalDateTime dtVeiculo = LocalDateTime.parse(veiculo.getEntradaDia() + "T" + veiculo.getEntradaHora());
-
-                                                if (dtVeiculo.isBefore(atual) || dtVeiculo.isEqual(atual)){
-                                                    db.collection("veiculo")
-                                                            .document(veiculo.getPlaca())
-                                                            .delete();
-                                                }
-                                            }
-                                            dialog.dismiss();
-                                            Toast.makeText(getApplicationContext(), "Veículos excluídos com sucesso", Toast.LENGTH_SHORT).show();
-                                            carregarTodosOsVeiculos();
-                                        }
-                                    });
-                        }
-                    })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Toast.makeText(getApplicationContext(), "Senha incorreta", Toast.LENGTH_SHORT).show();
-                        }
-                    });
+        btnBuscar.setOnClickListener(v -> {
+            String termo = editTextBusca.getText().toString().trim();
+            if (!termo.isEmpty()) {
+                buscar(termo);
+                adapter.setHighlightText("");
+            }
         });
-        dialog.show();
 
+        txtLimparBusca.setOnClickListener(v -> {
+            editTextBusca.setText("");
+            listar();
+        });
     }
+
+    public void buscar(String termo) {
+        db.collection("veiculo")
+                .whereEqualTo("placa", termo)
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        listaVeiculos.clear();
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            Veiculo veiculo = document.toObject(Veiculo.class);
+                            listaVeiculos.add(veiculo);
+                        }
+                        if (listaVeiculos.isEmpty()) {
+                            Toast.makeText(this, "Nenhum veículo encontrado", Toast.LENGTH_SHORT).show();
+                        }
+                        adapter.notifyDataSetChanged();
+                    }
+                });
+    }
+
+    public void listar() {
+        db.collection("veiculo").addSnapshotListener((value, error) -> {
+            if (error != null) return;
+            listaVeiculos.clear();
+            for (DocumentSnapshot doc : value.getDocuments()) {
+                Veiculo objveiculo = doc.toObject(Veiculo.class);
+                listaVeiculos.add(objveiculo);
+            }
+            adapter.notifyDataSetChanged();
+        });
+    }
+
+    private void buscarVeiculosPorTrechoPlaca(String termo) {
+        if (termo.isEmpty()) {
+            carregarTodosOsVeiculos();
+            return;
+        }
+
+        String fimTermo = termo + "\uf8ff";  // Truque para buscar tudo que começa com o termo
+
+        db.collection("veiculo")
+                .whereGreaterThanOrEqualTo("placa", termo)
+                .whereLessThanOrEqualTo("placa", fimTermo)
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    listaVeiculos.clear();
+                    for (DocumentSnapshot document : queryDocumentSnapshots) {
+                        Veiculo veiculo = document.toObject(Veiculo.class);
+                        listaVeiculos.add(veiculo);
+                    }
+                    adapter.notifyDataSetChanged();
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(this, "Erro ao buscar veículos", Toast.LENGTH_SHORT).show();
+                });
+    }
+
     private void carregarTodosOsVeiculos() {
         db.collection("veiculo")
                 .get()
@@ -173,31 +206,49 @@ public class ListaCarros extends AppCompatActivity {
                 });
     }
 
-    private void buscarVeiculoPorPlaca() {
-        String placaBuscada = editTextPlaca.getText().toString().trim();
+    private void mostrarPopupLimparRegistros() {
+        Dialog dialog = new Dialog(this);
+        dialog.setContentView(R.layout.confirmar_exclusao);
+        dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
 
-        if (placaBuscada.isEmpty()) {
-            Toast.makeText(this, "Digite uma placa para buscar", Toast.LENGTH_SHORT).show();
-            return;
-        }
+        TextInputEditText inputSenhaAdmin = dialog.findViewById(R.id.inputPlaca);
 
-        db.collection("veiculo")
-                .whereEqualTo("placa", placaBuscada)
-                .get()
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        listaVeiculos.clear();
-                        for (QueryDocumentSnapshot document : task.getResult()) {
-                            Veiculo veiculo = document.toObject(Veiculo.class);
-                            listaVeiculos.add(veiculo);
-                        }
-                        if (listaVeiculos.isEmpty()) {
-                            Toast.makeText(this, "Nenhum veículo encontrado com essa placa", Toast.LENGTH_SHORT).show();
-                        }
-                        adapter.notifyDataSetChanged();
-                    } else {
-                        Toast.makeText(this, "Erro ao buscar veículos", Toast.LENGTH_SHORT).show();
-                    }
-                });
+        dialog.findViewById(R.id.fecharCard).setOnClickListener(v -> dialog.dismiss());
+
+        dialog.findViewById(R.id.botaoRegistrar).setOnClickListener(v1 -> {
+            db.collection("admin")
+                    .whereEqualTo("senha", inputSenhaAdmin.getText().toString().trim())
+                    .get()
+                    .addOnSuccessListener(queryDocumentSnapshots -> db.collection("veiculo")
+                            .get()
+                            .addOnSuccessListener(querySnapshot -> {
+                                for (DocumentSnapshot doc : querySnapshot) {
+                                    Veiculo veiculo = doc.toObject(Veiculo.class);
+                                    LocalDateTime atual = LocalDateTime.now().minusMonths(1);
+                                    LocalDateTime dtVeiculo = LocalDateTime.parse(veiculo.getEntradaDia() + "T" + veiculo.getEntradaHora());
+                                    if (dtVeiculo.isBefore(atual) || dtVeiculo.isEqual(atual)) {
+                                        db.collection("veiculo")
+                                                .document(veiculo.getPlaca())
+                                                .delete();
+                                    }
+                                }
+                                dialog.dismiss();
+                                Toast.makeText(getApplicationContext(), "Veículos excluídos com sucesso", Toast.LENGTH_SHORT).show();
+                                carregarTodosOsVeiculos();
+                            }))
+                    .addOnFailureListener(e -> Toast.makeText(getApplicationContext(), "Senha incorreta", Toast.LENGTH_SHORT).show());
+        });
+
+        dialog.show();
     }
+}
+
+
+// ---- Classe SimpleTextWatcher ----
+abstract class SimpleTextWatcherListar implements android.text.TextWatcher {
+    @Override
+    public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+    @Override
+    public void afterTextChanged(android.text.Editable s) {}
 }
