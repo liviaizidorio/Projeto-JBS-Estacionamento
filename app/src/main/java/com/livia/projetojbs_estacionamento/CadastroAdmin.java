@@ -98,7 +98,7 @@ public class CadastroAdmin extends AppCompatActivity {
                     db.collection("admin").add(admin);
                     Toast.makeText(CadastroAdmin.this, "Cadastro realizado com sucesso!", Toast.LENGTH_SHORT).show();
 
-                    Intent rota = new Intent(CadastroAdmin.this, ListaCarros.class);
+                    Intent rota = new Intent(CadastroAdmin.this, LoginAdmin.class);
                     rota.putExtra("NOME_USUARIO", nomeDigitado);  // envia o nome junto
                     startActivity(rota);
                     finish();

@@ -72,7 +72,7 @@ public class CadastroUsuario extends AppCompatActivity {
                         Usuario usuario = new Usuario(nomeDigitado, emailDigitado, telefoneDigitado);
                         db.collection("usuario").add(usuario);
                         Toast.makeText(CadastroUsuario.this, "Cadastro realizado com sucesso!", Toast.LENGTH_SHORT).show();
-                        Intent rota = new Intent(CadastroUsuario.this, InfoVeiculos.class);
+                        Intent rota = new Intent(CadastroUsuario.this, LoginUsuario.class);
                         startActivity(rota);
                     } else if (resultado == 2) {
                         Toast.makeText(CadastroUsuario.this, "Telefone já cadastrado.", Toast.LENGTH_SHORT).show();

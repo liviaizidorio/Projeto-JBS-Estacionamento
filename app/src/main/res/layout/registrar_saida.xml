@@ -7,15 +7,16 @@
     app:cardCornerRadius="40dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="400dp"
-        android:layout_height="406dp"
+        android:layout_width="401dp"
+        android:layout_height="327dp"
         android:layout_margin="5dp"
         android:backgroundTint="#FFFFFF">
 
         <TextView
             android:id="@+id/perguntaRegSaida2"
-            android:layout_width="245dp"
-            android:layout_height="124dp"
+            android:layout_width="251dp"
+            android:layout_height="67dp"
+            android:layout_marginTop="44dp"
             android:padding="10dp"
             android:text="Deseja registrar a saída do veículo?"
             android:textAlignment="center"
@@ -40,7 +41,7 @@
             android:id="@+id/botaoRegistrar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="56dp"
+            android:layout_marginTop="39dp"
             android:backgroundTint="#4B25DB"
             android:text="Registrar saída"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -54,7 +55,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="X"
-            android:textSize="20sp"
+            android:textSize="34sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.59"
