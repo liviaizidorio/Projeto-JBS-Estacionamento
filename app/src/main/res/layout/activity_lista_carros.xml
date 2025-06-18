@@ -117,9 +117,9 @@
         android:id="@+id/img_apagar_regristros"
         android:layout_width="64dp"
         android:layout_height="61dp"
-        android:layout_marginTop="572dp"
+        android:layout_marginTop="396dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.955"
+        app:layout_constraintHorizontal_bias="0.953"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/placaUsuario"
         app:srcCompat="@drawable/lixeiro_registro" />
@@ -135,7 +135,8 @@
         android:text="Limpar\nRegistros"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/img_apagar_regristros" />
+        app:layout_constraintTop_toBottomOf="@+id/img_apagar_regristros"
+        app:layout_constraintVertical_bias="0.0" />
 
     <TextView
         android:id="@+id/textView9"

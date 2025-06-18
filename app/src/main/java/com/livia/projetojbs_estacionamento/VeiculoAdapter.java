@@ -2,6 +2,11 @@ package com.livia.projetojbs_estacionamento;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.graphics.Color;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.style.BackgroundColorSpan;
+import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +23,8 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.List;
 
@@ -31,6 +38,12 @@ public class VeiculoAdapter extends RecyclerView.Adapter<VeiculoAdapter.VeiculoV
         this.context = context;
     }
 
+    private String highlightText = "";
+
+    public void setHighlightText(String text) {
+        this.highlightText = text.toUpperCase();
+    }
+
     @NonNull
     @Override
     public VeiculoViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -42,24 +55,75 @@ public class VeiculoAdapter extends RecyclerView.Adapter<VeiculoAdapter.VeiculoV
     public void onBindViewHolder(@NonNull VeiculoViewHolder holder, int position) {
         Veiculo veiculo = listaVeiculos.get(position);
 
-        holder.txtPlaca.setText("Placa: " + veiculo.getPlaca());
-        holder.txtEntrada.setText("Entrada: " + veiculo.getEntradaDia() + " \nàs " + veiculo.getEntradaHora());
+        String dataFormatada = "";
+        if (veiculo.getEntradaDia() != null && !veiculo.getEntradaDia().isEmpty()) {
+            try {
+                DateTimeFormatter entradaFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+                DateTimeFormatter saidaFormatter = DateTimeFormatter.ofPattern("dd/MM");
+
+                LocalDate data = LocalDate.parse(veiculo.getEntradaDia(), entradaFormatter);
+                dataFormatada = data.format(saidaFormatter);
+            } catch (Exception e) {
+                dataFormatada = veiculo.getEntradaDia();
+            }
+        }
+
+        String dataSaidaFormatada = "";
+        if (veiculo.getSaidaDia() != null && !veiculo.getSaidaDia().isEmpty()) {
+            try {
+                DateTimeFormatter entradaFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+                DateTimeFormatter saidaFormatter = DateTimeFormatter.ofPattern("dd/MM");
+
+                LocalDate dataSaida = LocalDate.parse(veiculo.getSaidaDia(), entradaFormatter);
+                dataSaidaFormatada = dataSaida.format(saidaFormatter);
+            } catch (Exception e) {
+                dataSaidaFormatada = veiculo.getSaidaDia();
+            }
+        }
+
+        String placaPosicao = veiculo.getPlaca();
+        if (!highlightText.isEmpty()) {
+            SpannableString spannable = new SpannableString("Placa: " + placaPosicao);
+            int index = placaPosicao.toUpperCase().indexOf(highlightText);
+            if (index >= 0) {
+                int backgroundColor = Color.parseColor("#ADD8E6");
+                int textColor = Color.parseColor("#00008B");
+
+                spannable.setSpan(
+                        new BackgroundColorSpan(backgroundColor),
+                        7 + index,
+                        7 + index + highlightText.length(),
+                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                );
+                spannable.setSpan(
+                        new ForegroundColorSpan(textColor),
+                        7 + index,
+                        7 + index + highlightText.length(),
+                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                );
+            }
+            holder.txtPlaca.setText(spannable);
+        } else {
+            holder.txtPlaca.setText("Placa: " + placaPosicao);
+        }
+
+
+        //holder.txtPlaca.setText("Placa: " + veiculo.getPlaca());
+        holder.txtEntrada.setText("Entrada: " + dataFormatada + " | " + veiculo.getEntradaHora()); // -> Dia/Mes | Hora:minuto
 
         if (veiculo.getSaidaDia() != null && !veiculo.getSaidaDia().isEmpty()) {
-            holder.txtSaida.setText("Saída: " + veiculo.getSaidaDia() + " \nàs " + veiculo.getSaidaHora());
+            holder.txtSaida.setText("Saída: " + dataSaidaFormatada + " | " + veiculo.getSaidaHora()); // -> Dia/Mes | Hora:minuto
             holder.txtPermanencia.setText("Status: Finalizado");
         } else {
             holder.txtPermanencia.setText("Status: Em aberto");
             holder.txtSaida.setText("Saída: ");
         }
 
-        if (Cadastro.isAdmin) {
+        if (Cadastro.isAdmin){
             holder.btExcluir.setVisibility(View.VISIBLE);
-            holder.btRegistrarSaida.setVisibility(View.GONE);
         } else {
             holder.btRegistrarSaida.setVisibility(View.VISIBLE);
-            holder.btExcluir.setVisibility(View.GONE);
-        }
+        };
 
         holder.btExcluir.setOnClickListener(v -> {
             String placa = veiculo.getPlaca();
@@ -88,6 +152,7 @@ public class VeiculoAdapter extends RecyclerView.Adapter<VeiculoAdapter.VeiculoV
         holder.btRegistrarSaida.setOnClickListener(v -> {
             showDialogRegistrarSaida(veiculo.getPlaca());
         });
+
     }
 
     @Override
@@ -151,6 +216,7 @@ public class VeiculoAdapter extends RecyclerView.Adapter<VeiculoAdapter.VeiculoV
     public static class VeiculoViewHolder extends RecyclerView.ViewHolder {
         TextView txtPlaca, txtEntrada, txtSaida, txtPermanencia;
         ImageButton btExcluir;
+
         Button btRegistrarSaida;
 
         public VeiculoViewHolder(@NonNull View itemView) {
