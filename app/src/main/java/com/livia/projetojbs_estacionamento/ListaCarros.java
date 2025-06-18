@@ -1,5 +1,6 @@
 package com.livia.projetojbs_estacionamento;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -8,16 +9,23 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.livia.projetojbs_estacionamento.databinding.ActivityListaCarrosBinding;
 
 import org.checkerframework.checker.units.qual.A;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -97,6 +105,55 @@ public class ListaCarros extends AppCompatActivity {
     }
 
     private void mostrarPopupLimparRegistros() {
+        Dialog dialog = new Dialog(this);
+        dialog.setContentView(R.layout.confirmar_exclusao);
+        dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+
+        TextInputEditText inputSenhaAdmin = dialog.findViewById(R.id.inputPlaca);
+
+        dialog.findViewById(R.id.fecharCard).setOnClickListener(v -> {
+            dialog.dismiss();
+        });
+
+        dialog.findViewById(R.id.botaoRegistrar).setOnClickListener(v1 -> {
+            db.collection("admin")
+                    .whereEqualTo("senha", inputSenhaAdmin.getText().toString().trim())
+                    .get()
+                    .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                        @Override
+                        public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                            db.collection("veiculo")
+                                    .get()
+                                    .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                                        @Override
+                                        public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                                            for (DocumentSnapshot doc : queryDocumentSnapshots){
+                                                Veiculo veiculo = doc.toObject(Veiculo.class);
+
+                                                LocalDateTime atual = LocalDateTime.now().minusMonths(1);
+                                                LocalDateTime dtVeiculo = LocalDateTime.parse(veiculo.getEntradaDia() + "T" + veiculo.getEntradaHora());
+
+                                                if (dtVeiculo.isBefore(atual) || dtVeiculo.isEqual(atual)){
+                                                    db.collection("veiculo")
+                                                            .document(veiculo.getPlaca())
+                                                            .delete();
+                                                }
+                                            }
+                                            dialog.dismiss();
+                                            Toast.makeText(getApplicationContext(), "Veículos excluídos com sucesso", Toast.LENGTH_SHORT).show();
+                                            carregarTodosOsVeiculos();
+                                        }
+                                    });
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Toast.makeText(getApplicationContext(), "Senha incorreta", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+        });
+        dialog.show();
 
     }
     private void carregarTodosOsVeiculos() {
