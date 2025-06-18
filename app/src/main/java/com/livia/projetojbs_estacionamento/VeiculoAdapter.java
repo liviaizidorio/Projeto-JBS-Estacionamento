@@ -14,6 +14,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 public class VeiculoAdapter extends RecyclerView.Adapter<VeiculoAdapter.VeiculoViewHolder> {
@@ -37,8 +39,23 @@ public class VeiculoAdapter extends RecyclerView.Adapter<VeiculoAdapter.VeiculoV
     public void onBindViewHolder(@NonNull VeiculoViewHolder holder, int position) {
         Veiculo veiculo = listaVeiculos.get(position);
 
+        String dataFormatada = "";
+        if (veiculo.getEntradaDia() != null && !veiculo.getEntradaDia().isEmpty()) {
+            try {
+                DateTimeFormatter entradaFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+                DateTimeFormatter saidaFormatter = DateTimeFormatter.ofPattern("dd/MM");
+
+                LocalDate data = LocalDate.parse(veiculo.getEntradaDia(), entradaFormatter);
+                dataFormatada = data.format(saidaFormatter);
+            } catch (Exception e) {
+                dataFormatada = veiculo.getEntradaDia();
+            }
+        }
+
         holder.txtPlaca.setText("Placa: " + veiculo.getPlaca());
-        holder.txtEntrada.setText("Entrada: " + veiculo.getEntradaDia() + " \nàs " + veiculo.getEntradaHora());
+        holder.txtEntrada.setText("Entrada: " + dataFormatada + " | " + veiculo.getEntradaHora()); // -> Dia/Mes | Hora:minuto
+        //holder.txtEntrada.setText("Entrada: " + veiculo.getEntradaHora()); // -> Hora:minuto
+
 
         if (veiculo.getSaidaDia() != null && !veiculo.getSaidaDia().isEmpty()) {
             holder.txtSaida.setText("Saída: " + veiculo.getSaidaDia() + " \nàs " + veiculo.getSaidaHora());

@@ -49,8 +49,6 @@ public class CadastroPlaca extends AppCompatActivity {
         LocalDateTime agora = LocalDateTime.now();
         VeiculoAdapter veiculoAdapter = new VeiculoAdapter(listaVeiculo, this);
 
-
-
         binding = ActivityCadastroPlacaBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
