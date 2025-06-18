@@ -1,5 +1,6 @@
 package com.livia.projetojbs_estacionamento;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,8 +13,12 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.List;
 
 public class VeiculoAdapter extends RecyclerView.Adapter<VeiculoAdapter.VeiculoViewHolder> {
@@ -48,11 +53,13 @@ public class VeiculoAdapter extends RecyclerView.Adapter<VeiculoAdapter.VeiculoV
             holder.txtSaida.setText("Saída: ");
         }
 
-        if (Cadastro.isAdmin){
+        if (Cadastro.isAdmin) {
             holder.btExcluir.setVisibility(View.VISIBLE);
+            holder.btRegistrarSaida.setVisibility(View.GONE);
         } else {
             holder.btRegistrarSaida.setVisibility(View.VISIBLE);
-        };
+            holder.btExcluir.setVisibility(View.GONE);
+        }
 
         holder.btExcluir.setOnClickListener(v -> {
             String placa = veiculo.getPlaca();
@@ -78,6 +85,9 @@ public class VeiculoAdapter extends RecyclerView.Adapter<VeiculoAdapter.VeiculoV
                     .addOnFailureListener(e -> Toast.makeText(context, "Falha ao acessar o Firestore", Toast.LENGTH_SHORT).show());
         });
 
+        holder.btRegistrarSaida.setOnClickListener(v -> {
+            showDialogRegistrarSaida(veiculo.getPlaca());
+        });
     }
 
     @Override
@@ -85,10 +95,62 @@ public class VeiculoAdapter extends RecyclerView.Adapter<VeiculoAdapter.VeiculoV
         return listaVeiculos.size();
     }
 
+    private void showDialogRegistrarSaida(String placa) {
+        Dialog dialog = new Dialog(context);
+        dialog.setContentView(R.layout.registrar_saida);
+        dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+
+        TextInputEditText inputPlaca = dialog.findViewById(R.id.inputPlaca);
+        inputPlaca.setText(placa);
+
+        dialog.findViewById(R.id.fecharCard).setOnClickListener(v -> dialog.dismiss());
+
+        dialog.findViewById(R.id.botaoRegistrar).setOnClickListener(v1 -> {
+            String placaDigitada = inputPlaca.getText().toString().trim();
+
+            if (placaDigitada.isEmpty()) {
+                Toast.makeText(context, "Digite a placa", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            FirebaseFirestore.getInstance()
+                    .collection("veiculo")
+                    .whereEqualTo("placa", placaDigitada)
+                    .get()
+                    .addOnSuccessListener(queryDocumentSnapshots -> {
+                        if (!queryDocumentSnapshots.isEmpty()) {
+                            DocumentReference docRef = queryDocumentSnapshots.getDocuments().get(0).getReference();
+
+                            Calendar calendar = Calendar.getInstance();
+                            SimpleDateFormat sdfData = new SimpleDateFormat("yyyy-MM-dd");
+                            SimpleDateFormat sdfHora = new SimpleDateFormat("HH:mm");
+
+                            String dataAtual = sdfData.format(calendar.getTime());
+                            String horaAtual = sdfHora.format(calendar.getTime());
+
+                            docRef.update("saidaDia", dataAtual, "saidaHora", horaAtual)
+                                    .addOnSuccessListener(aVoid -> {
+                                        Toast.makeText(context, "Saída registrada", Toast.LENGTH_SHORT).show();
+                                        dialog.dismiss();
+                                    })
+                                    .addOnFailureListener(e -> {
+                                        Toast.makeText(context, "Erro ao registrar saída", Toast.LENGTH_SHORT).show();
+                                    });
+                        } else {
+                            Toast.makeText(context, "Placa não encontrada", Toast.LENGTH_SHORT).show();
+                        }
+                    })
+                    .addOnFailureListener(e -> {
+                        Toast.makeText(context, "Erro ao acessar Firestore", Toast.LENGTH_SHORT).show();
+                    });
+        });
+
+        dialog.show();
+    }
+
     public static class VeiculoViewHolder extends RecyclerView.ViewHolder {
         TextView txtPlaca, txtEntrada, txtSaida, txtPermanencia;
         ImageButton btExcluir;
-
         Button btRegistrarSaida;
 
         public VeiculoViewHolder(@NonNull View itemView) {
